@@ -1,12 +1,44 @@
-<script setup></script>
+
+<script setup>
+import { ref } from 'vue'
+import Header from './components/Header.vue'
+import Todoformulier from './components/Todoformulier.vue'
+import TodoLijst from './components/Todolijst.vue'
+
+const taken = ref([])
+
+function taakToevoegen(naam) {
+  taken.value.push({
+    id: Date.now(),
+    naam: naam,
+    voltooid: false,
+    prioriteit: 'Middel'
+  })
+}
+
+function taakVoltooien(id) {
+  const taak = taken.value.find(taak => taak.id === id)
+
+  if (taak) {
+    taak.voltooid = !taak.voltooid
+  }
+}
+
+function taakVerwijderen(id) {
+  taken.value = taken.value.filter(taak => taak.id !== id)
+}
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
-</template>
+  <div class="p-5 ">
+    <Header />
 
-<style scoped></style>
- 
+    <Todoformulier @taak-toevoegen="taakToevoegen" />
+
+    <TodoLijst
+      :taken="taken"
+      @taak-voltooien="taakVoltooien"
+      @taak-verwijderen="taakVerwijderen"
+    />
+  </div>
+</template>
